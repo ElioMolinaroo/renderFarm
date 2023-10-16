@@ -151,67 +151,67 @@ def packetsDistribution(packets):
 
 # Controller code for single farm ps1 code generation
 def singleFarm(packets, job_name, scene_path, cam_name):
-     # Create node job output directory
-        final_output_dir = str(Path("C:\FARM_OUTPUT") / job_name).replace('C:\\', '//elio-node/')
-        final_output_dir = Path(final_output_dir)
-        final_output_dir.mkdir()
-        
-        # Generate a list of renderman commands
-        rman_commands_list = []
-        for packet in packets:
-            current_command = formatRenderCommand(scene_path, "C:\FARM_OUTPUT", job_name, cam_name, packet[0], packet[1])
-            rman_commands_list.append(current_command)
+    # Create node job output directory
+    final_output_dir = str(Path("C:\FARM_OUTPUT") / job_name).replace('C:\\', '//elio-node/')
+    final_output_dir = Path(final_output_dir)
+    final_output_dir.mkdir()
+    
+    # Generate a list of renderman commands
+    rman_commands_list = []
+    for packet in packets:
+        current_command = formatRenderCommand(scene_path, "C:\FARM_OUTPUT", job_name, cam_name, packet[0], packet[1])
+        rman_commands_list.append(current_command)
 
-        # Generate powershell code
-        final_rman_command = '; '.join(rman_commands_list)
-        ps1_code = f'''{final_rman_command}
+    # Generate powershell code
+    final_rman_command = '; '.join(rman_commands_list)
+    ps1_code = f'''{final_rman_command}
 Write-Host "Batch render terminated successfully..."
 pause'''
 
-        # Write command to node file
-        overrideWriteFile(ps1_code, NODE_PS1_PATH)
+    # Write command to node file
+    overrideWriteFile(ps1_code, NODE_PS1_PATH)
 
 
 # Controller code for dual farm ps1 code generation
 def dualFarm(packets, job_name, scene_path, cam_name):
-     # Generate packets distribution
-        node_packets, machine_packets = packetsDistribution(packets)
+    # Generate packets distribution
+    node_packets, machine_packets = packetsDistribution(packets)
 
-        # Create node job output directory
-        node_output_dir = str(Path("C:\FARM_OUTPUT") / job_name).replace('C:\\', '//elio-node/')
-        node_output_dir = Path(node_output_dir)
-        node_output_dir.mkdir()
-        # Create machine job output directory
-        machine_output_dir = Path("C:\FARM_OUTPUT") / job_name
-        machine_output_dir.mkdir()
+    # Create node job output directory
+    node_output_dir = str(Path("C:\FARM_OUTPUT") / job_name).replace('C:\\', '//elio-node/')
+    node_output_dir = Path(node_output_dir)
+    node_output_dir.mkdir()
+    # Create machine job output directory
+    machine_output_dir = Path("C:\FARM_OUTPUT") / job_name
+    machine_output_dir.mkdir()
 
-        # Generate a list of renderman commands for machine
-        machine_rman_commands_list = []
-        for machine_packet in machine_packets:
-            current_command = formatRenderCommand(scene_path, "C:\FARM_OUTPUT", job_name, cam_name, machine_packet[0], machine_packet[1])
-            machine_rman_commands_list.append(current_command)
-        # Generate powershell code for machine
-        machine_final_rman_command = '; '.join(machine_rman_commands_list)
-        machine_ps1_code = f'''{machine_final_rman_command}
+    # Generate a list of renderman commands for machine
+    machine_rman_commands_list = []
+    for machine_packet in machine_packets:
+        current_command = formatRenderCommand(scene_path, "C:\FARM_OUTPUT", job_name, cam_name, machine_packet[0], machine_packet[1])
+        machine_rman_commands_list.append(current_command)
+    # Generate powershell code for machine
+    machine_final_rman_command = '; '.join(machine_rman_commands_list)
+    machine_ps1_code = f'''{machine_final_rman_command}
 Write-Host "Batch render terminated successfully..."
 pause'''
 
-        # Generate a list of renderman commands for node
-        node_rman_commands_list = []
-        for node_packet in node_packets:
-            current_command = formatRenderCommand(scene_path, "C:\FARM_OUTPUT", job_name, cam_name, node_packet[0], node_packet[1])
-            node_rman_commands_list.append(current_command)
-        # Generate powershell code for node
-        node_final_rman_command = '; '.join(node_rman_commands_list)
-        node_ps1_code = f'''{node_final_rman_command}
+    # Generate a list of renderman commands for node
+    node_rman_commands_list = []
+    for node_packet in node_packets:
+        current_command = formatRenderCommand(scene_path, "C:\FARM_OUTPUT", job_name, cam_name, node_packet[0], node_packet[1])
+        node_rman_commands_list.append(current_command)
+    # Generate powershell code for node
+    node_final_rman_command = '; '.join(node_rman_commands_list)
+    node_ps1_code = f'''{node_final_rman_command}
 Write-Host "Batch render terminated successfully..."
 pause'''
 
-        # Write command to machine file
-        overrideWriteFile(machine_ps1_code, MACHINE_PS1_PATH)
+    # Write command to machine file
+    overrideWriteFile(machine_ps1_code, MACHINE_PS1_PATH)
 
-        # Write command to node file
-        overrideWriteFile(node_ps1_code, NODE_PS1_PATH)
+    # Write command to node file
+    overrideWriteFile(node_ps1_code, NODE_PS1_PATH)
 
 
 # Controller function for the batch script writing
